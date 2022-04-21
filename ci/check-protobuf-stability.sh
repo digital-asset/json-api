@@ -88,6 +88,10 @@ USAGE
   # This check does not need to run on release branch commits because
   # they are built sequentially, so no conflicts are possible and the per-PR
   # check is enough.
+  if [ 0 == "$(git tag | wc -l)" ]; then
+      echo "No tag, no check."
+      exit 0
+  fi
   readonly RELEASE_BRANCH_REGEX="^release/.*"
   LATEST_STABLE_TAG=""
   if [[ "${TARGET}" =~ ${RELEASE_BRANCH_REGEX} ]]; then
