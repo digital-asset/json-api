@@ -265,7 +265,6 @@ da_haskell_repl(
         "//daml-assistant/daml-helper",
         "//daml-assistant/daml-helper:test-deployment",
         "//daml-assistant/daml-helper:test-tls",
-        "//daml-assistant/integration-tests",
         "//language-support/hs/bindings:hs-ledger",
         "//language-support/hs/bindings:test",
         "//language-support/ts/codegen:daml2js",
