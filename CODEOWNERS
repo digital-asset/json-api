@@ -23,7 +23,6 @@ NOTICES     @garyverhaegen-da @dasormeter
 /daml-assistant/    @sofiafaro-da @ray-roestenburg-da
 /daml-script/       @remyhaemmerle-da
 /triggers/          @remyhaemmerle-da
-/compatibility/     @garyverhaegen-da
 /compiler/          @sofiafaro-da
 /libs-haskell/      @sofiafaro-da
 /ghc-lib/           @sofiafaro-da
