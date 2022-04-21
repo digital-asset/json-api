@@ -48,7 +48,7 @@ if [ ! -z "${BAZEL_CONFIG_DIR:-}" ]; then
     cd "$BAZEL_CONFIG_DIR"
 fi
 
-CACHE_URL="https://storage.googleapis.com/daml-bazel-cache"
+CACHE_URL="https://storage.googleapis.com/daml-bazel-cache/json-api/2022-04-21/$os"
 
 if is_windows; then
   echo "build --config windows" > .bazelrc.local
@@ -76,7 +76,7 @@ if is_windows; then
   # We include an extra version at the end that we can bump manually.
   CACHE_SUFFIX="$SUFFIX-v12"
   CACHE_URL="$CACHE_URL/$CACHE_SUFFIX"
-  echo "build:windows-ci --remote_http_cache=https://bazel-cache.da-ext.net/$CACHE_SUFFIX" >> .bazelrc.local
+  echo "build:windows-ci --remote_http_cache=https://bazel-cache.da-ext.net/json-api/2022-04-21/windows/$CACHE_SUFFIX" >> .bazelrc.local
 fi
 
 # sets up write access to the shared remote cache if the branch is not a fork
