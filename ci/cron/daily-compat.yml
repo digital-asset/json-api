@@ -23,50 +23,6 @@ schedules:
   always: true
 
 jobs:
-  - job: compatibility_ts_libs
-    timeoutInMinutes: 60
-    pool:
-      name: ubuntu_20_04
-      demands: assignment -equals default
-    steps:
-      - checkout: self
-      - template: ../clean-up.yml
-      - template: ../compatibility_ts_libs.yml
-
-  - job: compatibility
-    dependsOn: compatibility_ts_libs
-    timeoutInMinutes: 720
-    strategy:
-      matrix:
-        linux:
-          pool: ubuntu_20_04
-        macos:
-          pool: macOS-pool
-    pool:
-      name: $(pool)
-      demands: assignment -equals default
-    steps:
-      - checkout: self
-      - ${{ if eq(variables['pool'], 'macos-pool') }}:
-        - template: ../clear-shared-segments-macos.yml
-      - template: ../clean-up.yml
-      - template: ../compatibility.yml
-
-  - job: compatibility_windows
-    dependsOn: compatibility_ts_libs
-    timeoutInMinutes: 720
-    pool:
-      name: windows-pool
-      demands: assignment -equals default
-    steps:
-      - checkout: self
-      - template: ../compatibility-windows.yml
-      - task: PublishBuildArtifacts@1
-        condition: succeededOrFailed()
-        inputs:
-          pathtoPublish: '$(Build.StagingDirectory)'
-          artifactName: 'Bazel Compatibility Logs'
-
   - job: perf_speedy
     timeoutInMinutes: 120
     pool:
@@ -596,8 +552,7 @@ jobs:
         AUTH: $(ARTIFACTORY_USERNAME):$(ARTIFACTORY_PASSWORD)
 
   - job: report
-    dependsOn: [compatibility_ts_libs, compatibility, compatibility_windows,
-                perf_speedy, perf_http_json, perf_http_json_querystore, check_releases,
+    dependsOn: [perf_speedy, perf_http_json, perf_http_json_querystore, check_releases,
                 blackduck_scan, run_notices_pr_build, bump_canton]
     condition: and(succeededOrFailed(),
                    eq(variables['Build.SourceBranchName'], 'main'))
@@ -605,9 +560,6 @@ jobs:
       name: ubuntu_20_04
       demands: assignment -equals default
     variables:
-      compatibility_ts_libs: $[ dependencies.compatibility_ts_libs.result ]
-      compatibility: $[ dependencies.compatibility.result ]
-      compatibility_windows: $[ dependencies.compatibility_windows.result ]
       perf_speedy: $[ dependencies.perf_speedy.result ]
       speedy_perf: $[ dependencies.perf_speedy.outputs['out.speedy_perf'] ]
       perf_http_json: $[ dependencies.perf_http_json.result ]
@@ -631,10 +583,7 @@ jobs:
         COMMIT_TITLE="$(escape_slack "$(git log --pretty=format:%s -n1)")"
         COMMIT_LINK="<https://dev.azure.com/digitalasset/daml/_build/results?buildId=$(Build.BuildId)|${COMMIT_TITLE}>"
 
-        if [[ "$(compatibility_ts_libs)" == "Succeeded"
-           && "$(compatibility)" == "Succeeded"
-           && "$(compatibility_windows)" == "Succeeded"
-           && "$(perf_speedy)" == "Succeeded"
+        if "$(perf_speedy)" == "Succeeded"
            && "$(perf_http_json)" == "Succeeded"
            && "$(perf_http_json_querystore)" == "Succeeded"
            && "$(check_releases)" == "Succeeded"
