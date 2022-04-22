@@ -110,46 +110,6 @@ jobs:
         trigger_sha: '$(trigger_sha)'
     - template: report-end.yml
 
-- job: macOS
-  dependsOn:
-    - da_ghc_lib
-    - check_for_release
-    - git_sha
-  timeoutInMinutes: 360
-  pool:
-    name: macOS-pool
-    demands: assignment -equals default
-  variables:
-    - name: release_sha
-      value: $[ dependencies.check_for_release.outputs['out.release_sha'] ]
-    - name: release_tag
-      value: $[ coalesce(dependencies.check_for_release.outputs['out.release_tag'], '0.0.0') ]
-    - name: trigger_sha
-      value: $[ dependencies.check_for_release.outputs['out.trigger_sha'] ]
-    - name: is_release
-      value: $[ dependencies.check_for_release.outputs['out.is_release'] ]
-    - template: job-variables.yml
-  steps:
-    - template: report-start.yml
-    - template: clear-shared-segments-macos.yml
-    - checkout: self
-    - bash: |
-        set -euo pipefail
-        git checkout $(release_sha)
-      name: checkout_release
-      condition: and(succeeded(), eq(variables.is_release, 'true'))
-    - template: clean-up.yml
-    - template: build-unix.yml
-      parameters:
-        release_tag: $(release_tag)
-        name: macos
-        is_release: variables.is_release
-    - template: upload-bazel-metrics.yml
-    - template: tell-slack-failed.yml
-      parameters:
-        trigger_sha: '$(trigger_sha)'
-    - template: report-end.yml
-
 - job: Linux_oracle
   dependsOn:
     - da_ghc_lib
@@ -245,42 +205,6 @@ jobs:
         trigger_sha: '$(trigger_sha)'
     - template: report-end.yml
 
-- job: platform_independence_test
-  condition: and(succeeded(),
-                 eq(dependencies.check_for_release.outputs['out.is_release'], 'false'))
-  dependsOn:
-    - Linux
-    - macOS
-  pool:
-    name: 'ubuntu_20_04'
-    demands: assignment -equals default
-  steps:
-    - checkout: self
-    - bash: ci/dev-env-install.sh
-      displayName: 'Build/Install the Developer Environment'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        artifactName: platform-independence-dar-linux
-        targetPath: $(Build.StagingDirectory)/platform-independence/linux/
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        artifactName: platform-independence-dar-macos
-        targetPath: $(Build.StagingDirectory)/platform-independence/macos/
-    - bash: |
-        set -euo pipefail
-        eval "$(./dev-env/bin/dade-assist)"
-
-        DIR1=$(mktemp -d)
-        DIR3=$(mktemp -d)
-        trap "rm -rf $DIR1; rm -rf $DIR3" EXIT
-
-        unzip -d $DIR1 $(Build.StagingDirectory)/platform-independence/linux/platform-independence.dar
-        unzip -d $DIR3 $(Build.StagingDirectory)/platform-independence/macos/platform-independence.dar
-
-        # hie/hi files may differ.
-        diff -r --strip-trailing-cr -x '*.hie' -x '*.hi' $DIR1 $DIR3
-      displayName: 'Compare platform-independence dars of different platforms.'
-
 # For main and PRs targeting main, we simply check against the most recent stable tag.
 - job: compatibility_stable_protobuf
   pool:
@@ -296,7 +220,6 @@ jobs:
   dependsOn:
     - Linux
     - Linux_oracle
-    - macOS
     - release
     - git_sha
     - compatibility_stable_protobuf
@@ -313,10 +236,6 @@ jobs:
     Linux_oracle.machine: $[ dependencies.Linux_oracle.outputs['start.machine'] ]
     Linux_oracle.end: $[ dependencies.Linux_oracle.outputs['end.time'] ]
     Linux_oracle.status: $[ dependencies.Linux_oracle.result ]
-    macOS.start: $[ dependencies.macOS.outputs['start.time'] ]
-    macOS.machine: $[ dependencies.macOS.outputs['start.machine'] ]
-    macOS.end: $[ dependencies.macOS.outputs['end.time'] ]
-    macOS.status: $[ dependencies.macOS.result ]
     release.start: $[ dependencies.release.outputs['start.time'] ]
     release.machine: $[ dependencies.release.outputs['start.machine'] ]
     release.end: $[ dependencies.release.outputs['end.time'] ]
@@ -354,10 +273,6 @@ jobs:
                             "machine": "$(Linux_oracle.machine)",
                             "end": "$(Linux_oracle.end)",
                             "status": "$(Linux_oracle.status)"},
-                  "macOS": {"start": "$(macOS.start)",
-                            "machine": "$(macOS.machine)",
-                            "end": "$(macOS.end)",
-                            "status": "$(macOS.status)"},
                   "release": {"start": "$(release.start)",
                               "machine": "$(release.machine)",
                               "end": "$(release.end)",
@@ -394,13 +309,11 @@ jobs:
             echo "Could not save build data: no credentials."
         fi
 
-        # Linux, macOS are always required and should always
-        # succeed.
+        # Linux is always required and should always succeed.
         #
         # release only run on releases and is skipped otherwise.
         if [[ !("$(Linux.status)" == "Succeeded" || "$(Linux.status)" == "SucceededWithIssues")
             || "$(Linux_oracle.status)" != "Succeeded"
-            || !("$(macOS.status)" == "Succeeded" || "$(macOS.status)" == "SucceededWithIssues")
             || "$(release.status)" == "Canceled" ]]; then
             exit 1
         fi

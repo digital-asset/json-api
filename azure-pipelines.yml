@@ -58,11 +58,6 @@ jobs:
         artifactName: linux-release
         targetPath: $(Build.StagingDirectory)/release-artifacts
       condition: and(succeeded(), not(eq(variables['skip-github'], 'TRUE')))
-    - task: DownloadPipelineArtifact@0
-      inputs:
-        artifactName: macos-release
-        targetPath: $(Build.StagingDirectory)/release-artifacts
-      condition: and(succeeded(), not(eq(variables['skip-github'], 'TRUE')))
     - bash: |
         set -euo pipefail
         # Note: this gets dev-env from the release commit, not the trigger commit
