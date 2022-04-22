@@ -21,7 +21,7 @@ jobs:
 - template: ci/check-for-release-job.yml
 
 - job: release
-  dependsOn: [ "check_for_release", "Linux", "macOS", "Windows" ]
+  dependsOn: [ "check_for_release", "Linux", "macOS" ]
   condition: and(succeeded(),
                  eq(dependencies.check_for_release.outputs['out.is_release'], 'true'),
                  eq(dependencies.check_for_release.outputs['out.split_release_process'], 'false'),
@@ -61,11 +61,6 @@ jobs:
     - task: DownloadPipelineArtifact@0
       inputs:
         artifactName: macos-release
-        targetPath: $(Build.StagingDirectory)/release-artifacts
-      condition: and(succeeded(), not(eq(variables['skip-github'], 'TRUE')))
-    - task: DownloadPipelineArtifact@0
-      inputs:
-        artifactName: windows-release
         targetPath: $(Build.StagingDirectory)/release-artifacts
       condition: and(succeeded(), not(eq(variables['skip-github'], 'TRUE')))
     - bash: |
