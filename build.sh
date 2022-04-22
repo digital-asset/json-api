@@ -29,7 +29,19 @@ if [ -n "$SANDBOX_PID" ]; then
 fi
 
 # Bazel test only builds targets that are dependencies of a test suite so do a full build first.
-bazel build //... \
+bazel build //ledger-service/cli-opts/... \
+            //ledger-service/db-backend/... \
+            //ledger-service/fetch-contracts/... \
+            //ledger-service/http-json/... \
+            //ledger-service/http-json-cli/... \
+            //ledger-service/http-json-ledger-client/... \
+            //ledger-service/http-json-oracle/... \
+            //ledger-service/http-json-perf/... \
+            //ledger-service/http-json-testing/... \
+            //ledger-service/jwt/... \
+            //ledger-service/lf-value-json/... \
+            //ledger-service/pureconfig-utils/... \
+            //ledger-service/utils/... \
   --build_tag_filters "$tag_filter" \
   --profile build-profile.json \
   --experimental_profile_include_target_label \
@@ -68,7 +80,19 @@ stop_postgresql # in case it's running from a previous build
 start_postgresql
 
 # Run the tests.
-bazel test //... \
+bazel test //ledger-service/cli-opts/... \
+           //ledger-service/db-backend/... \
+           //ledger-service/fetch-contracts/... \
+           //ledger-service/http-json/... \
+           //ledger-service/http-json-cli/... \
+           //ledger-service/http-json-ledger-client/... \
+           //ledger-service/http-json-oracle/... \
+           //ledger-service/http-json-perf/... \
+           //ledger-service/http-json-testing/... \
+           //ledger-service/jwt/... \
+           //ledger-service/lf-value-json/... \
+           //ledger-service/pureconfig-utils/... \
+           //ledger-service/utils/... \
   --build_tag_filters "$tag_filter" \
   --test_tag_filters "$tag_filter" \
   --test_env "POSTGRESQL_HOST=${POSTGRESQL_HOST}" \
@@ -80,19 +104,3 @@ bazel test //... \
   --build_event_json_file test-events.json \
   --build_event_publish_all_actions \
   --experimental_execution_log_file "$ARTIFACT_DIRS/logs/test_execution${execution_log_postfix}.log"
-
-# Make sure that Bazel query works.
-bazel query 'deps(//...)' >/dev/null
-
-# Check that we can load damlc in ghci
-# Disabled on darwin since it sometimes seem to hang and this only
-# tests our dev setup rather than our code so issues are not critical.
-if [[ "$(uname)" != "Darwin" ]]; then
-  da-ghci --data yes //compiler/damlc:damlc -e ':main --help'
-fi
-
-# Test that ghcide at least builds starts, we don’t run it since it
-# adds 2-5 minutes to each CI run with relatively little benefit. If
-# you want to test it manually on upgrades, run
-# ghcide compiler/damlc/exe/Main.hs.
-ghcide --help
