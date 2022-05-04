@@ -33,6 +33,7 @@ for f in $(git ls-files \
           | grep -v '^.github' \
           | grep -v '^ci/' \
           | grep -v '^build.sh$' \
+          | grep -v '^try-delete.sh$' \
           ); do
     echo $f >> files.tmp
     rm $f
