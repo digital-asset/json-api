@@ -1,8 +1,6 @@
 # Copyright (c) 2022 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-load("@os_info//:os_info.bzl", "is_windows")
-
 genrule(
     name = "test-certificates",
     srcs = [

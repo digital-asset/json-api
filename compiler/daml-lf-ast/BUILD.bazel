@@ -33,24 +33,3 @@ da_haskell_library(
         "//libs-haskell/da-hs-base",
     ],
 )
-
-da_haskell_test(
-    name = "tests",
-    srcs = glob(["test/**/*.hs"]),
-    hackage_deps = [
-        "base",
-        "containers",
-        "extra",
-        "tasty",
-        "tasty-hunit",
-    ],
-    main_function = "DA.Daml.LF.Ast.Tests.main",
-    src_strip_prefix = "test",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":daml-lf-ast",
-        "//compiler/daml-lf-tools",
-        "//libs-haskell/da-hs-base",
-        "//libs-haskell/test-utils",
-    ],
-)

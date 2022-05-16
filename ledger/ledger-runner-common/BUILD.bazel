@@ -3,9 +3,7 @@
 
 load(
     "//bazel_tools:scala.bzl",
-    "da_scala_binary",
     "da_scala_library",
-    "da_scala_test_suite",
 )
 
 da_scala_library(
@@ -46,25 +44,5 @@ da_scala_library(
         "//libs-scala/resources-grpc",
         "@maven//:com_auth0_java_jwt",
         "@maven//:io_netty_netty_handler",
-    ],
-)
-
-da_scala_test_suite(
-    name = "ledger-runner-common-tests",
-    size = "small",
-    srcs = glob(["src/test/scala/**/*.scala"]),
-    scala_deps = [
-        "@maven//:com_github_scopt_scopt",
-        "@maven//:org_scalatest_scalatest_core",
-        "@maven//:org_scalatest_scalatest_matchers_core",
-        "@maven//:org_scalatest_scalatest_shouldmatchers",
-    ],
-    deps = [
-        ":ledger-runner-common",
-        "//daml-lf/data",
-        "//ledger/ledger-api-common",
-        "//ledger/participant-integration-api",
-        "@maven//:io_netty_netty_handler",
-        "@maven//:org_scalatest_scalatest_compatible",
     ],
 )

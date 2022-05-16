@@ -3,18 +3,12 @@
 
 load(
     "//bazel_tools:scala.bzl",
-    "da_scala_binary",
     "da_scala_library",
-    "da_scala_test",
 )
 
 script_scalacopts = ["-P:wartremover:traverser:org.wartremover.warts.%s" % wart for wart in [
     "NonUnitStatements",
 ]]
-
-test_script_sources = [
-    "src/main/scala/com/digitalasset/daml/lf/engine/script/TestMain.scala",
-]
 
 da_scala_library(
     name = "script-runner-lib",
@@ -58,34 +52,3 @@ da_scala_library(
         "//libs-scala/contextualized-logging",
     ],
 )
-
-da_scala_test(
-    name = "tests",
-    srcs = glob(
-        ["src/test/**/*.scala"],
-    ),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":script-runner-lib",
-        "//daml-lf/data",
-        "//language-support/scala/bindings",
-        "//language-support/scala/bindings-akka",
-    ],
-)
-
-da_scala_binary(
-    name = "daml-script-binary",
-    main_class = "com.daml.lf.engine.script.ScriptMain",
-    resources = glob(["src/main/resources/**/*"]),
-    scala_runtime_deps = [
-        "@maven//:com_typesafe_akka_akka_slf4j",
-    ],
-    scalacopts = script_scalacopts,
-    visibility = ["//visibility:public"],
-    runtime_deps = [
-        "@maven//:ch_qos_logback_logback_classic",
-    ],
-    deps = [":script-runner-lib"],
-)
-
-exports_files(["src/main/resources/logback.xml"])

@@ -4,7 +4,6 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_library",
-    "da_scala_test_suite",
 )
 
 da_scala_library(
@@ -17,13 +16,5 @@ da_scala_library(
     tags = ["maven_coordinates=com.daml:logging-entries:__VERSION__"],
     visibility = [
         "//visibility:public",
-    ],
-)
-
-da_scala_test_suite(
-    name = "logging-entries-tests",
-    srcs = glob(["src/test/scala/**/*.scala"]),
-    deps = [
-        ":logging-entries",
     ],
 )

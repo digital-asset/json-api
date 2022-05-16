@@ -4,9 +4,7 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_library",
-    "da_scala_test_suite",
 )
-load("@scala_version//:index.bzl", "scala_major_version")
 
 da_scala_library(
     name = "ledger-api-client",
@@ -40,86 +38,5 @@ da_scala_library(
         "@maven//:io_grpc_grpc_netty",
         "@maven//:io_netty_netty_handler",
         "@maven//:org_slf4j_slf4j_api",
-    ],
-)
-
-da_scala_test_suite(
-    name = "ledger-api-client-tests",
-    srcs = glob(["src/test/suite/**/*.scala"]),
-    scala_deps = [
-        "@maven//:com_typesafe_akka_akka_actor",
-        "@maven//:com_typesafe_akka_akka_stream",
-        "@maven//:com_typesafe_akka_akka_stream_testkit",
-        "@maven//:org_mockito_mockito_scala",
-        "@maven//:org_scalatest_scalatest_core",
-        "@maven//:org_scalatest_scalatest_matchers_core",
-        "@maven//:org_scalatest_scalatest_shouldmatchers",
-        "@maven//:org_scalatest_scalatest_wordspec",
-    ],
-    deps = [
-        ":ledger-api-client",
-        "//language-support/scala/bindings",
-        "//ledger-api/rs-grpc-bridge",
-        "//ledger-api/testing-utils",
-        "//ledger/caching",
-        "//ledger/error",
-        "//ledger/ledger-api-common",
-        "//ledger/ledger-api-domain",
-        "//ledger/ledger-grpc",
-        "//ledger/metrics",
-        "//libs-scala/concurrent",
-        "//libs-scala/contextualized-logging",
-        "//libs-scala/grpc-utils",
-        "@maven//:com_google_api_grpc_proto_google_common_protos",
-        "@maven//:com_google_protobuf_protobuf_java",
-        "@maven//:io_dropwizard_metrics_metrics_core",
-        "@maven//:org_mockito_mockito_core",
-        "@maven//:org_reactivestreams_reactive_streams",
-        "@maven//:org_scalatest_scalatest_compatible",
-    ],
-)
-
-da_scala_test_suite(
-    name = "ledger-api-client-integration-tests",
-    srcs = glob(["src/it/**/*.scala"]),
-    data = [
-        "//ledger/test-common:dar-files",
-    ],
-    resources = [
-        "src/it/resources/logback-test.xml",
-    ],
-    scala_deps = [
-        "@maven//:com_typesafe_akka_akka_actor",
-        "@maven//:com_typesafe_akka_akka_stream",
-    ],
-    deps = [
-        ":ledger-api-client",
-        "//daml-lf/transaction",
-        "//language-support/scala/bindings",
-        "//ledger-api/rs-grpc-bridge",
-        "//ledger-api/testing-utils",
-        "//ledger/caching",
-        "//ledger/error",
-        "//ledger/ledger-api-auth",
-        "//ledger/ledger-api-common",
-        "//ledger/ledger-api-domain",
-        "//ledger/ledger-configuration",
-        "//ledger/ledger-resources",
-        "//ledger/metrics",
-        "//ledger/participant-integration-api",
-        "//ledger/participant-state",
-        "//ledger/sandbox-common",
-        "//ledger/sandbox-common:sandbox-common-scala-tests-lib",
-        "//ledger/sandbox-on-x:sandbox-classic-server",
-        "//ledger/sandbox-on-x:sandbox-on-x-test-lib",
-        "//ledger/test-common",
-        "//libs-scala/concurrent",
-        "//libs-scala/contextualized-logging",
-        "//libs-scala/grpc-utils",
-        "//libs-scala/logging-entries",
-        "//libs-scala/ports",
-        "//libs-scala/resources",
-        "@maven//:ch_qos_logback_logback_classic",
-        "@maven//:io_netty_netty_handler",
     ],
 )

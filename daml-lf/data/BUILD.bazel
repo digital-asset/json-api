@@ -34,20 +34,3 @@ da_scala_library(
         "@maven//:org_slf4j_slf4j_api",
     ],
 )
-
-da_scala_test(
-    name = "data-test",
-    size = "small",
-    scala_deps = [
-        "@maven//:org_scalacheck_scalacheck",
-        "@maven//:org_scalatestplus_scalacheck_1_15",
-        "@maven//:org_scalaz_scalaz_core",
-        "@maven//:org_scalaz_scalaz_scalacheck_binding",
-    ],
-    scalacopts = lf_scalacopts,
-    deps = [
-        ":data",
-        "//daml-lf/data-scalacheck",
-        "//libs-scala/scalatest-utils",
-    ],
-)
