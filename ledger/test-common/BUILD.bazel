@@ -6,12 +6,6 @@ load(
     "da_scala_library",
 )
 load(
-    "//language-support/scala/codegen:codegen.bzl",
-    "dar_to_scala",
-)
-load("@scala_version//:index.bzl", "scala_major_version")
-load("@scala_version//:index.bzl", "scala_major_version")
-load(
     "//daml-lf/language:daml-lf.bzl",
     "lf_version_configuration",
     "lf_version_configuration_versions",
@@ -105,36 +99,3 @@ da_scala_dar_resources_library(
     maven_name_prefix = "test",
     visibility = ["//visibility:public"],
 )
-
-[
-    [
-        [
-            dar_to_scala(
-                name = "%s-tests-%s.scala-codegen" % (test_name, target),
-                srcs = [":%s-tests-%s.dar" % (test_name, target)],
-                package_prefix = "com.daml.ledger.test.%s" % test_name,
-                srcjar_out = "%s-%s.scala.srcjar" % (test_name, target),
-                visibility = ["//visibility:public"],
-            ),
-            da_scala_library(
-                name = "%s-tests-%s.scala" % (test_name, target),
-                srcs = [
-                    ":%s-tests-%s.scala-codegen" % (test_name, target),
-                ],
-                scalacopts = [
-                    "-Wconf:cat=unused-imports&site=com\\.daml\\.ledger\\.test\\.%s\\..*:s" % test_name,
-                ],
-                tags = ["maven_coordinates=com.daml:test-common-%s-tests-scala-%s:__VERSION__" % (
-                    test_name.replace("_", "-"),
-                    target,
-                )],
-                visibility = ["//visibility:public"],
-                deps = [
-                    "//language-support/scala/bindings",
-                ],
-            ),
-        ]
-        for test_name in test_names
-    ]
-    for target in lf_version_configuration_versions
-]

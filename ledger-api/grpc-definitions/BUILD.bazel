@@ -2,14 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("//bazel_tools:haskell.bzl", "da_haskell_library")
-load("//bazel_tools:proto.bzl", "proto_gen", "proto_jars")
-load(
-    "//bazel_tools:scala.bzl",
-    "scala_source_jar",
-    "scaladoc_jar",
-)
-load("@os_info//:os_info.bzl", "is_windows")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("//bazel_tools:proto.bzl", "proto_jars")
 
 ledger_api_proto_source_root = "ledger-api/grpc-definitions"
 
@@ -232,35 +225,5 @@ da_haskell_library(
         "text",
         "vector",
     ],
-    visibility = ["//visibility:public"],
-)
-
-proto_gen(
-    name = "ledger-api-docs",
-    srcs = [":ledger_api_proto"],
-    plugin_exec = "@com_github_pseudomuto_protoc_gen_doc//cmd/protoc-gen-doc:protoc-gen-doc",
-    plugin_name = "doc",
-    plugin_options = [
-        ledger_api_proto_source_root + "/rst_mmd.tmpl",
-        "docs.rst",
-    ],
-    # this is _slightly_ hacky. we need to include the markdown template in the plugin_runfiles
-    # and refer to the file with a workspace relative path in plugin_options
-    plugin_runfiles = ["rst_mmd.tmpl"],
-    visibility = [
-        "//visibility:public",
-    ],
-)
-
-genrule(
-    name = "docs",
-    srcs = [":ledger-api-docs"],
-    outs = ["proto-docs.rst"],
-    cmd = """
-        unzip -q $(location :ledger-api-docs)
-        $(location post-process.sh)
-        mv docs.rst '$@'
-    """,
-    tools = ["post-process.sh"],
     visibility = ["//visibility:public"],
 )

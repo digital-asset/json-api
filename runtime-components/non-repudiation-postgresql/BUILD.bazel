@@ -4,7 +4,6 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_library",
-    "da_scala_test",
 )
 
 da_scala_library(
@@ -31,33 +30,5 @@ da_scala_library(
         "//runtime-components/non-repudiation-resources",
         "@maven//:com_zaxxer_HikariCP",
         "@maven//:org_flywaydb_flyway_core",
-    ],
-)
-
-da_scala_test(
-    name = "test",
-    srcs = glob(["src/test/scala/**/*.scala"]),
-    resources = [
-        "src/test/resources/logback-test.xml",
-    ],
-    scala_deps = [
-        "@maven//:org_tpolecat_doobie_core",
-        "@maven//:org_tpolecat_doobie_hikari",
-        "@maven//:org_typelevel_cats_effect",
-    ],
-    runtime_deps = [
-        "@maven//:ch_qos_logback_logback_classic",
-        "@maven//:org_postgresql_postgresql",
-    ],
-    deps = [
-        ":non-repudiation-postgresql",
-        "//ledger-api/grpc-definitions:ledger_api_proto_scala",
-        "//libs-scala/doobie-slf4j",
-        "//libs-scala/ports",
-        "//libs-scala/postgresql-testing",
-        "//libs-scala/resources",
-        "//runtime-components/non-repudiation",
-        "//runtime-components/non-repudiation-testing",
-        "@maven//:org_slf4j_slf4j_api",
     ],
 )

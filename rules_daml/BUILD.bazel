@@ -2,7 +2,3 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Export Bazel sources for Bazel API docs.
-exports_files(
-    ["daml.bzl"],
-    visibility = ["//bazel_tools/docs:__pkg__"],
-)

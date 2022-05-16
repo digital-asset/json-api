@@ -3,9 +3,7 @@
 
 load(
     "//bazel_tools:scala.bzl",
-    "da_scala_binary",
     "da_scala_library",
-    "da_scala_test_suite",
 )
 
 da_scala_library(
@@ -36,63 +34,4 @@ da_scala_library(
         "@maven//:io_grpc_grpc_context",
         "@maven//:org_slf4j_slf4j_api",
     ],
-)
-
-da_scala_binary(
-    name = "ledger-api-auth-bin",
-    srcs = glob(["src/app/scala/**/*.scala"]),
-    main_class = "com.daml.ledger.api.auth.Main",
-    scala_deps = [
-        "@maven//:com_github_scopt_scopt",
-        "@maven//:org_scalaz_scalaz_core",
-    ],
-    deps = [
-        ":ledger-api-auth",
-        "//ledger-service/jwt",
-    ],
-)
-
-da_scala_test_suite(
-    name = "ledger-api-auth-scala-tests",
-    srcs = glob(["src/test/suite/**/*.scala"]),
-    scala_deps = [
-        "@maven//:io_spray_spray_json",
-        "@maven//:org_mockito_mockito_scala",
-        "@maven//:org_scalacheck_scalacheck",
-        "@maven//:org_scalatest_scalatest_core",
-        "@maven//:org_scalatest_scalatest_matchers_core",
-        "@maven//:org_scalatest_scalatest_shouldmatchers",
-        "@maven//:org_scalatest_scalatest_wordspec",
-        "@maven//:org_scalatestplus_scalacheck_1_15",
-        "@maven//:com_typesafe_akka_akka_actor",
-        "@maven//:com_typesafe_akka_akka_stream",
-    ],
-    deps = [
-        ":ledger-api-auth",
-        "//daml-lf/data",
-        "//ledger-api/rs-grpc-bridge",
-        "//ledger-api/testing-utils",
-        "//ledger/error",
-        "//ledger/error:error-test-lib",
-        "//ledger/ledger-api-common",
-        "//ledger/ledger-api-domain",
-        "//ledger/participant-state-index",
-        "//ledger/test-common",
-        "//libs-scala/adjustable-clock",
-        "//libs-scala/contextualized-logging",
-        "@maven//:com_google_api_grpc_proto_google_common_protos",
-        "@maven//:com_google_protobuf_protobuf_java",
-        "@maven//:io_grpc_grpc_api",
-        "@maven//:io_grpc_grpc_context",
-        "@maven//:io_grpc_grpc_protobuf",
-        "@maven//:io_grpc_grpc_stub",
-        "@maven//:org_mockito_mockito_core",
-        "@maven//:org_scalatest_scalatest_compatible",
-    ],
-)
-
-filegroup(
-    name = "sources",
-    srcs = glob(["src/main/scala/**/*.scala"]),
-    visibility = ["//visibility:public"],
 )

@@ -4,7 +4,6 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_macro_library",
-    "da_scala_test_suite",
 )
 
 da_scala_macro_library(
@@ -20,19 +19,6 @@ da_scala_macro_library(
         "@maven//:org_scala_lang_scala_reflect",
     ],
     deps = [
-        "@maven//:org_scala_lang_scala_compiler",
-        "@maven//:org_scala_lang_scala_reflect",
-    ],
-)
-
-da_scala_test_suite(
-    name = "nameof-tests",
-    srcs = glob(["src/test/suite/**/*.scala"]),
-    resources = glob(["src/test/suite/resources/**/*"]),
-    scala_deps = [
-    ],
-    deps = [
-        ":nameof",
         "@maven//:org_scala_lang_scala_compiler",
         "@maven//:org_scala_lang_scala_reflect",
     ],

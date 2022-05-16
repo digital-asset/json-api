@@ -4,7 +4,6 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_library",
-    "da_scala_test_suite",
 )
 
 da_scala_library(
@@ -41,33 +40,5 @@ da_scala_library(
         "//libs-scala/logging-entries",
         "@maven//:com_google_api_grpc_proto_google_common_protos",
         "@maven//:com_google_protobuf_protobuf_java",
-    ],
-)
-
-filegroup(
-    name = "sources",
-    srcs = glob(["src/main/scala/**/*.scala"]),
-    visibility = ["//visibility:public"],
-)
-
-da_scala_test_suite(
-    name = "participant-state-tests",
-    size = "small",
-    srcs = glob(["src/test/suite/scala/**/*.scala"]),
-    resources = glob(["src/test/resources/*"]),
-    scala_deps = [
-        "@maven//:org_scalatest_scalatest_core",
-        "@maven//:org_scalatest_scalatest_matchers_core",
-        "@maven//:org_scalatest_scalatest_shouldmatchers",
-        "@maven//:org_scalatest_scalatest_wordspec",
-        "@maven//:org_scalaz_scalaz_core",
-    ],
-    deps = [
-        ":participant-state",
-        "//daml-lf/data",
-        "//daml-lf/transaction",
-        "//ledger-api/grpc-definitions:ledger_api_proto_scala",
-        "//ledger/ledger-offset",
-        "@maven//:org_scalatest_scalatest_compatible",
     ],
 )

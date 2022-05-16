@@ -4,7 +4,6 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_library",
-    "da_scala_test",
     "kind_projector_plugin",
     "lf_scalacopts",
 )
@@ -31,21 +30,5 @@ da_scala_library(
         "//visibility:public",
     ],
     deps = [
-    ],
-)
-
-da_scala_test(
-    name = "test",
-    srcs = glob(["src/test/scala/**/*.scala"]),
-    plugins = [
-        kind_projector_plugin,
-    ],
-    scala_deps = [
-        "@maven//:org_scalaz_scalaz_core",
-    ],
-    scalacopts = scalacopts,
-    deps = [
-        ":scala-utils",
-        "//libs-scala/scalatest-utils",
     ],
 )

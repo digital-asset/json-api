@@ -4,7 +4,6 @@
 load(
     "//bazel_tools:scala.bzl",
     "da_scala_library",
-    "da_scala_test_suite",
     "kind_projector_plugin",
 )
 
@@ -66,41 +65,5 @@ da_scala_library(
         "@maven//:io_netty_netty_handler",
         "@maven//:io_netty_netty_tcnative_boringssl_static",
         "@maven//:org_slf4j_slf4j_api",
-    ],
-)
-
-da_scala_test_suite(
-    name = "tests",
-    srcs = glob(
-        [
-            "src/test/**/*.scala",
-        ],
-    ),
-    scala_deps = [
-        "@maven//:com_typesafe_akka_akka_actor",
-        "@maven//:com_typesafe_akka_akka_stream",
-        "@maven//:com_typesafe_scala_logging_scala_logging",
-        "@maven//:org_scalatest_scalatest_core",
-        "@maven//:org_scalatest_scalatest_matchers_core",
-        "@maven//:org_scalatest_scalatest_shouldmatchers",
-        "@maven//:org_scalatest_scalatest_wordspec",
-        "@maven//:org_scalaz_scalaz_core",
-    ],
-    scala_runtime_deps = [
-        "@maven//:com_typesafe_akka_akka_stream_testkit",
-    ],
-    visibility = [
-        "//visibility:public",
-    ],
-    deps = [
-        ":bindings-akka",
-        "//language-support/scala/bindings",
-        "//language-support/scala/bindings-akka-testing",
-        "//ledger-api/rs-grpc-bridge",
-        "//ledger/ledger-api-client",
-        "//ledger/metrics",
-        "@maven//:com_google_api_grpc_proto_google_common_protos",
-        "@maven//:com_typesafe_config",
-        "@maven//:org_scalatest_scalatest_compatible",
     ],
 )

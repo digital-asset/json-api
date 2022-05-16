@@ -4,8 +4,6 @@
 load(
     "//bazel_tools:haskell.bzl",
     "da_haskell_library",
-    "da_haskell_repl",
-    "da_haskell_test",
 )
 
 da_haskell_library(
@@ -47,56 +45,5 @@ da_haskell_library(
         "//compiler/damlc/daml-opts:daml-opts-types",
         "//compiler/damlc/daml-rule-types",
         "//libs-haskell/da-hs-base",
-    ],
-)
-
-da_haskell_library(
-    name = "daml-doc-testing",
-    srcs = glob(["test/**/*.hs"]),
-    compiler_flags = [
-        "-DPOSIX_DIFF=\"$(POSIX_DIFF)\"",
-    ],
-    hackage_deps = [
-        "aeson-pretty",
-        "base",
-        "bytestring",
-        "containers",
-        "directory",
-        "extra",
-        "filepath",
-        "ghcide",
-        "lsp",
-        "mtl",
-        "tasty-hunit",
-        "tasty-golden",
-        "text",
-        "transformers",
-    ],
-    src_strip_prefix = "test",
-    toolchains = [
-        "@rules_sh//sh/posix:make_variables",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//compiler/daml-lf-ast",
-        "//compiler/damlc/daml-compiler",
-        "//compiler/damlc/daml-doc",
-        "//compiler/damlc/daml-opts:daml-opts-types",
-        "//compiler/damlc/daml-rule-types",
-        "//libs-haskell/bazel-runfiles",
-        "//libs-haskell/da-hs-base",
-        "//libs-haskell/test-utils",
-    ],
-)
-
-da_haskell_repl(
-    name = "repl",
-    testonly = True,
-    visibility = ["//visibility:public"],
-    deps = [
-        ":daml-doc",
-        ":daml-doc-testing",
-        "//compiler/damlc:damlc-lib",
-        "//compiler/damlc/tests:daml-doc",
     ],
 )
